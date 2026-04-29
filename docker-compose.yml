@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  threatlocker-mcp:
+    image: ghcr.io/wyre-technology/threatlocker-mcp:latest
+    container_name: threatlocker-mcp
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      - MCP_TRANSPORT=http
+      - MCP_HTTP_PORT=8080
+      - AUTH_MODE=gateway
+      # For stdio mode, uncomment these and set AUTH_MODE=env:
+      # - THREATLOCKER_API_KEY=your_api_key_here
+      # - THREATLOCKER_ORGANIZATION_ID=your_org_id_here
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    volumes:
+      - threatlocker-mcp-logs:/app/logs
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  threatlocker-mcp-logs:
+    driver: local

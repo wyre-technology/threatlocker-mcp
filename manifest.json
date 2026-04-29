@@ -1,0 +1,55 @@
+{
+  "manifest_version": "0.3",
+  "name": "threatlocker-mcp",
+  "version": "0.1.0",
+  "display_name": "ThreatLocker MCP Server",
+  "description": "MCP server for ThreatLocker Portal API - access computers, approval requests, audit logs, and organizations through AI assistants",
+  "long_description": "Provides AI assistants with structured access to your ThreatLocker Portal data. Manage computers, computer groups, approval requests, audit logs, and organizations through the Model Context Protocol. Features decision-tree navigation, elicitation prompts, and comprehensive error handling.",
+  "author": {
+    "name": "WYRE Technology",
+    "url": "https://github.com/wyre-technology"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wyre-technology/threatlocker-mcp"
+  },
+  "homepage": "https://github.com/wyre-technology/threatlocker-mcp",
+  "license": "Apache-2.0",
+  "keywords": ["threatlocker", "security", "endpoint", "application-control", "msp", "computers"],
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "THREATLOCKER_API_KEY": "${user_config.threatlocker_api_key}",
+        "THREATLOCKER_ORGANIZATION_ID": "${user_config.threatlocker_organization_id}",
+        "MCP_TRANSPORT": "stdio"
+      }
+    }
+  },
+  "tools_generated": true,
+  "user_config": {
+    "threatlocker_api_key": {
+      "type": "string",
+      "title": "ThreatLocker API Key",
+      "description": "Your ThreatLocker Portal API key",
+      "required": true,
+      "sensitive": true
+    },
+    "threatlocker_organization_id": {
+      "type": "string",
+      "title": "ThreatLocker Organization ID",
+      "description": "Your ThreatLocker organization ID",
+      "required": true
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    },
+    "claude_desktop": ">=0.10.0"
+  }
+}
