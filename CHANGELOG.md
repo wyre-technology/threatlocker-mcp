@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.0.0...v1.0.1) (2026-05-01)
+
+
+### Bug Fixes
+
+* **docker:** add _authToken line to .npmrc ([e1d14a8](https://github.com/wyre-technology/threatlocker-mcp/commit/e1d14a8a2113920350cc8019e56d88a69f7fa654))
+
 # 1.0.0 (2026-05-01)
 
 
