@@ -41,8 +41,6 @@ export async function getClient(): Promise<any> {
   const key = `${creds.apiKey}:${creds.organizationId}`;
   if (_client && _credKey === key) return _client;
 
-  // TODO: Remove ts-expect-error when SDK is published
-  // @ts-expect-error pending SDK publish
   _client = new ThreatLockerClient(creds);
   _credKey = key;
   logger.info('Created ThreatLocker API client');
