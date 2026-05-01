@@ -1,3 +1,10 @@
+# 1.0.0 (2026-05-01)
+
+
+### Features
+
+* initial MCP server scaffold for ThreatLocker ([666e0b0](https://github.com/wyre-technology/threatlocker-mcp/commit/666e0b0fd3ff1e473099641532f52ce878a09e72))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
