@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.0.1...v1.0.2) (2026-05-04)
+
+
+### Bug Fixes
+
+* **add-to-project:** call shared reusable workflow ([#3](https://github.com/wyre-technology/threatlocker-mcp/issues/3)) ([eb9011c](https://github.com/wyre-technology/threatlocker-mcp/commit/eb9011c077b5cc7d76d3ffc54f673bcef59ce5b3))
+
 ## [1.0.1](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.0.0...v1.0.1) (2026-05-01)
 
 
