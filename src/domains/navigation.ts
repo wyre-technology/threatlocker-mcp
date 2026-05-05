@@ -1,34 +1,36 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import type { DomainName, NavigationState } from '../utils/types.js';
-
-const sessionStates = new Map<string, NavigationState>();
-
-export function getState(sessionId: string = 'default'): NavigationState {
-  if (!sessionStates.has(sessionId)) {
-    sessionStates.set(sessionId, { currentDomain: null });
-  }
-  return sessionStates.get(sessionId)!;
-}
+import type { DomainName } from '../utils/types.js';
 
 export const DOMAINS: DomainName[] = ['computers', 'computer_groups', 'approval_requests', 'audit_log', 'organizations'];
+
+/**
+ * Domain metadata for navigation help
+ */
+const domainDescriptions: Record<DomainName, string> = {
+  computers: "Computer management - list/get computers, get check-ins, and device information",
+  computer_groups: "Computer group management - list computer groups and dropdown options",
+  approval_requests: "Approval request management - list/get approval requests, pending count, permit applications",
+  audit_log: "Audit log management - search audit logs, get audit entries, file history",
+  organizations: "Organization management - list child organizations, get auth key, move computer options",
+};
 
 export function getNavigationTools(): Tool[] {
   return [
     {
       name: 'threatlocker_navigate',
-      description: `Navigate to a domain to see its tools. Domains: ${DOMAINS.join(', ')}.
-- computers: list/get computers, get checkins
-- computer_groups: list computer groups, dropdown options
-- approval_requests: list/get approval requests, pending count, permit applications
-- audit_log: search audit logs, get audit entries, file history
-- organizations: list child organizations, get auth key, move computer options`,
+      description: 'Discover available ThreatLocker tools by domain. Returns tool names and descriptions for the selected domain. All tools are callable at any time — this is a help/discovery aid, not a prerequisite.',
       inputSchema: {
         type: 'object' as const,
         properties: {
           domain: {
             type: 'string',
             enum: DOMAINS,
-            description: 'The domain to navigate to',
+            description: `The domain to explore:
+- computers: ${domainDescriptions.computers}
+- computer_groups: ${domainDescriptions.computer_groups}
+- approval_requests: ${domainDescriptions.approval_requests}
+- audit_log: ${domainDescriptions.audit_log}
+- organizations: ${domainDescriptions.organizations}`,
           },
         },
         required: ['domain'],
@@ -36,16 +38,9 @@ export function getNavigationTools(): Tool[] {
     },
     {
       name: 'threatlocker_status',
-      description: 'Check ThreatLocker API connection status and available domains.',
+      description: 'Show credentials status and available domains',
       inputSchema: { type: 'object' as const, properties: {} },
     },
   ];
 }
 
-export function getBackTool(): Tool {
-  return {
-    name: 'threatlocker_back',
-    description: 'Return to the domain navigation menu.',
-    inputSchema: { type: 'object' as const, properties: {} },
-  };
-}

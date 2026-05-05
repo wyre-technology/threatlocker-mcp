@@ -16,6 +16,3 @@ export interface DomainHandler {
   ): Promise<CallToolResult>;
 }
 
-export type NavigationState = {
-  currentDomain: DomainName | null;
-};
