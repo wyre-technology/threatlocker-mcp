@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.0.2...v1.0.3) (2026-05-05)
+
+
+### Bug Fixes
+
+* flatten navigation pattern for direct-install compatibility ([#4](https://github.com/wyre-technology/threatlocker-mcp/issues/4)) ([e074b8c](https://github.com/wyre-technology/threatlocker-mcp/commit/e074b8cbbc8d34d2948af4dd338d4ab0512bd4a9))
+
 ## [1.0.2](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.0.1...v1.0.2) (2026-05-04)
 
 
