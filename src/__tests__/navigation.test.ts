@@ -1,24 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { getState, getNavigationTools, getBackTool, DOMAINS } from '../domains/navigation.js';
+import { getNavigationTools, DOMAINS } from '../domains/navigation.js';
 
 describe('Navigation', () => {
-  it('should return null domain initially', () => {
-    const state = getState('test-1');
-    expect(state.currentDomain).toBeNull();
-  });
-
-  it('should track domain state', () => {
-    const state = getState('test-2');
-    state.currentDomain = 'approval_requests';
-    expect(getState('test-2').currentDomain).toBe('approval_requests');
-  });
-
-  it('should isolate sessions', () => {
-    const s1 = getState('test-3');
-    const s2 = getState('test-4');
-    s1.currentDomain = 'computers';
-    expect(s2.currentDomain).toBeNull();
-  });
 
   it('should have all v0.1.0 domains', () => {
     expect(DOMAINS).toContain('computers');
@@ -35,8 +18,16 @@ describe('Navigation', () => {
     expect(tools[1].name).toBe('threatlocker_status');
   });
 
-  it('should return back tool', () => {
-    const tool = getBackTool();
-    expect(tool.name).toBe('threatlocker_back');
+  it('should have navigate tool as discovery aid', () => {
+    const tools = getNavigationTools();
+    const navigateTool = tools.find(t => t.name === 'threatlocker_navigate');
+    expect(navigateTool?.description).toContain('discovery aid');
+    expect(navigateTool?.description).toContain('All tools are callable at any time');
+  });
+
+  it('should have status tool for connection info', () => {
+    const tools = getNavigationTools();
+    const statusTool = tools.find(t => t.name === 'threatlocker_status');
+    expect(statusTool?.description).toContain('credentials status');
   });
 });

@@ -46,12 +46,23 @@ export function createMcpServer(): Server {
       }
 
       const handler = await getDomainHandler(domain);
-      const tools = handler.getTools().map(t => `${t.name}: ${t.description}`);
+      const tools = handler.getTools();
+
+      const toolSummary = tools
+        .map(t => `- ${t.name}: ${t.description}`)
+        .join('\n');
+
+      // Get domain description from navigation
+      const navTools = getNavigationTools();
+      const navTool = navTools.find(t => t.name === 'threatlocker_navigate');
+      const domainDesc = navTool?.inputSchema?.properties?.domain?.description || '';
+      const domainLine = domainDesc.split('\n').find(line => line.includes(`- ${domain}:`));
+      const description = domainLine ? domainLine.replace(`- ${domain}: `, '') : `${domain} domain`;
 
       return {
         content: [{
           type: 'text' as const,
-          text: `Domain: ${domain}\n\nAvailable tools:\n${tools.join('\n')}`,
+          text: `${description}\n\nAvailable tools:\n${toolSummary}\n\nYou can call any of these tools directly.`,
         }],
       };
     }
@@ -59,13 +70,14 @@ export function createMcpServer(): Server {
     // Navigation: status
     if (name === 'threatlocker_status') {
       const creds = getCredentials();
+      const credStatus = creds
+        ? 'Configured (API connection available)'
+        : 'NOT CONFIGURED - Please set environment variables';
+
       return {
         content: [{
           type: 'text' as const,
-          text: JSON.stringify({
-            connected: !!creds,
-            domains: DOMAINS,
-          }, null, 2),
+          text: `ThreatLocker MCP Server Status\n\nCredentials: ${credStatus}\nAvailable domains: ${DOMAINS.join(', ')}\n\nAll tools are available at all times. Use threatlocker_navigate to discover tools by domain.`,
         }],
       };
     }
