@@ -55,8 +55,9 @@ export function createMcpServer(): Server {
       // Get domain description from navigation
       const navTools = getNavigationTools();
       const navTool = navTools.find(t => t.name === 'threatlocker_navigate');
-      const domainDesc = navTool?.inputSchema?.properties?.domain?.description || '';
-      const domainLine = domainDesc.split('\n').find(line => line.includes(`- ${domain}:`));
+      const domainProp = navTool?.inputSchema?.properties?.domain as { description?: string } | undefined;
+      const domainDesc = domainProp?.description ?? '';
+      const domainLine = domainDesc.split('\n').find((line: string) => line.includes(`- ${domain}:`));
       const description = domainLine ? domainLine.replace(`- ${domain}: `, '') : `${domain} domain`;
 
       return {
