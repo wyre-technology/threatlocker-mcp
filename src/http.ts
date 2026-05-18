@@ -12,12 +12,15 @@ function startHttpServer(): void {
   const httpServer = createHttpServer(async (req, res) => {
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
 
-    if (url.pathname === '/health') {
+    // Shallow liveness probe — always 200 when the process is up.
+    // In gateway mode credentials arrive per-request via headers, so a
+    // credential check here would always fail and incorrectly mark the
+    // container Unhealthy. Credential status is reported informationally.
+    if (url.pathname === '/health' || url.pathname === '/healthz') {
       const creds = getCredentials();
-      const statusCode = creds ? 200 : 503;
-      res.writeHead(statusCode, { 'Content-Type': 'application/json' });
+      res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
-        status: creds ? 'ok' : 'degraded',
+        status: 'ok',
         transport: 'http',
         credentials: { configured: !!creds },
         timestamp: new Date().toISOString(),
@@ -27,7 +30,7 @@ function startHttpServer(): void {
 
     if (url.pathname !== '/mcp') {
       res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Not found', endpoints: ['/mcp', '/health'] }));
+      res.end(JSON.stringify({ error: 'Not found', endpoints: ['/mcp', '/health', '/healthz'] }));
       return;
     }
 
