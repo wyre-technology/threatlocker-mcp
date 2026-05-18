@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.0.3...v1.0.4) (2026-05-18)
+
+
+### Bug Fixes
+
+* bump node-threatlocker to 1.0.2 and make /health a shallow probe ([#6](https://github.com/wyre-technology/threatlocker-mcp/issues/6)) ([f9aaa64](https://github.com/wyre-technology/threatlocker-mcp/commit/f9aaa645e2d19ef341f1571e84521bc189fee5e0))
+
 ## [Unreleased]
 
 ### Fixed
