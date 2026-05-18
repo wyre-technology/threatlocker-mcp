@@ -1,3 +1,18 @@
+## [Unreleased]
+
+### Fixed
+
+- Container crashed on startup with `ERR_MODULE_NOT_FOUND` for
+  `@wyre-technology/node-threatlocker/dist/index.js`. The SDK had been
+  published without its compiled `dist/` output. Bumped the dependency to
+  `@wyre-technology/node-threatlocker@^1.0.2`, which ships the build output.
+- `/health` returned `503` in gateway mode because it checked for
+  startup-time credentials, which never exist in gateway mode (credentials
+  arrive per-request via headers). This caused ACA to mark a working
+  container Unhealthy. `/health` (and new alias `/healthz`) are now shallow
+  liveness probes that return `200` whenever the process is up; credential
+  status is still reported informationally in the body.
+
 ## [1.0.3](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.0.2...v1.0.3) (2026-05-05)
 
 
