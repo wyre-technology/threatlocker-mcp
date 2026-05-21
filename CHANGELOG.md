@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.0.4...v1.1.0) (2026-05-21)
+
+
+### Features
+
+* add server.json for MCP Registry publication ([#8](https://github.com/wyre-technology/threatlocker-mcp/issues/8)) ([251c68a](https://github.com/wyre-technology/threatlocker-mcp/commit/251c68a3ae2acf95363bed4255513e1560896d0f))
+
 ## [1.0.4](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.0.3...v1.0.4) (2026-05-18)
 
 
