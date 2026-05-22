@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.1.0...v1.2.0) (2026-05-22)
+
+
+### Features
+
+* **ci:** make MCP Registry publish reliable ([#9](https://github.com/wyre-technology/threatlocker-mcp/issues/9)) ([9d685eb](https://github.com/wyre-technology/threatlocker-mcp/commit/9d685ebe5f7150cf4063654c6ad9f18f5efd18c4)), closes [wyre-technology/.github#16](https://github.com/wyre-technology/.github/issues/16)
+
 # [1.1.0](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.0.4...v1.1.0) (2026-05-21)
 
 
