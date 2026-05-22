@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.2.0...v1.2.1) (2026-05-22)
+
+
+### Bug Fixes
+
+* shorten server.json description to <=100 chars for MCP registry validation ([6374177](https://github.com/wyre-technology/threatlocker-mcp/commit/63741778064d2f14e2d6b928e52e4874cd486f7a))
+
 # [1.2.0](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.1.0...v1.2.0) (2026-05-22)
 
 
