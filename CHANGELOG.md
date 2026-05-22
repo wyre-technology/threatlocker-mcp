@@ -1,3 +1,11 @@
+## [1.2.2](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.2.1...v1.2.2) (2026-05-22)
+
+
+### Bug Fixes
+
+* set released=true only when semantic-release creates a new version ([b4d51a2](https://github.com/wyre-technology/threatlocker-mcp/commit/b4d51a2b2107300f2f41f9527c6f1e96fb0a737d))
+* use block scalar for PRE_VERSION capture to avoid shell quoting issue ([0394bce](https://github.com/wyre-technology/threatlocker-mcp/commit/0394bce348f3d647befd91506d96190b48660b7b))
+
 ## [1.2.1](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.2.0...v1.2.1) (2026-05-22)
 
 
