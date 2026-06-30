@@ -1,15 +1,34 @@
+// TODO: SDK not yet published - remove these comments when @wyre-technology/node-threatlocker@0.1.0 is available
+// Expected to export ThreatLockerClient class with:
+// - .computers resource
+// - .computerGroups resource
+// - .approvalRequests resource
+// - .auditLog resource
+// - .organizations resource
+
+// @ts-expect-error pending SDK publish
 import { ThreatLockerClient } from '@wyre-technology/node-threatlocker';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { logger } from './logger.js';
 
-let _client: any | null = null;
-let _credKey: string | null = null;
-
-interface Credentials {
+export interface Credentials {
   apiKey: string;
   organizationId: string;
 }
 
+// Request-scoped credential store. In gateway mode the HTTP layer runs each
+// request inside runWithCredentials({apiKey, organizationId}); getCredentials()
+// reads it. Falls back to process.env for stdio/single-tenant mode.
+const credStore = new AsyncLocalStorage<Credentials>();
+
+export function runWithCredentials<T>(creds: Credentials, fn: () => T): T {
+  return credStore.run(creds, fn);
+}
+
 export function getCredentials(): Credentials | null {
+  const scoped = credStore.getStore();
+  if (scoped?.apiKey && scoped?.organizationId) return scoped;
+
   const apiKey = process.env.THREATLOCKER_API_KEY;
   const organizationId = process.env.THREATLOCKER_ORGANIZATION_ID;
   if (!apiKey || !organizationId) {
@@ -19,21 +38,16 @@ export function getCredentials(): Credentials | null {
   return { apiKey, organizationId };
 }
 
-export function resetClient(): void {
-  _client = null;
-  _credKey = null;
-  logger.debug('Reset ThreatLocker client');
-}
-
+// Constructs a client from the request-scoped (or env) credentials. The client
+// is cheap and holds no shared mutable state, so we build one per call — never
+// a process-global singleton.
 export async function getClient(): Promise<any> {
   const creds = getCredentials();
-  if (!creds) throw new Error('No ThreatLocker API credentials configured. Set THREATLOCKER_API_KEY and THREATLOCKER_ORGANIZATION_ID.');
-
-  const key = `${creds.apiKey}:${creds.organizationId}`;
-  if (_client && _credKey === key) return _client;
-
-  _client = new ThreatLockerClient(creds);
-  _credKey = key;
+  if (!creds) {
+    throw new Error(
+      'No ThreatLocker API credentials configured. Set THREATLOCKER_API_KEY and THREATLOCKER_ORGANIZATION_ID.',
+    );
+  }
   logger.info('Created ThreatLocker API client');
-  return _client;
+  return new ThreatLockerClient(creds);
 }
