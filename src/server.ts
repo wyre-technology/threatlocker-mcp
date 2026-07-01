@@ -2,7 +2,7 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { ListToolsRequestSchema, CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { getNavigationTools, DOMAINS } from './domains/navigation.js';
 import { getDomainHandler } from './domains/index.js';
-import { getCredentials, resetClient } from './utils/client.js';
+import { getCredentials } from './utils/client.js';
 import { logger } from './utils/logger.js';
 import { setServerRef } from './utils/server-ref.js';
 import type { DomainName } from './utils/types.js';
