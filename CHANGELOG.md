@@ -1,3 +1,12 @@
+## [1.2.3](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.2.2...v1.2.3) (2026-07-18)
+
+
+### Bug Fixes
+
+* **build:** ignoreDeprecations must be "6.0", not "5.0" ([#34](https://github.com/wyre-technology/threatlocker-mcp/issues/34)) ([f1cfc5c](https://github.com/wyre-technology/threatlocker-mcp/commit/f1cfc5c3355e267e94c5ac1ee1594d1ab4ed04ff))
+* **security:** request-scoped credentials via AsyncLocalStorage to close cross-tenant leak ([#29](https://github.com/wyre-technology/threatlocker-mcp/issues/29)) ([868ee44](https://github.com/wyre-technology/threatlocker-mcp/commit/868ee44e0b3a0c9b82159c8268cf96696d4212aa))
+* **security:** SHA-pin auto-add-to-project.yml [@main](https://github.com/main) -> [@6ae1533dd72f](https://github.com/6ae1533dd72f) (warden C-4) ([#26](https://github.com/wyre-technology/threatlocker-mcp/issues/26)) ([85ad6d1](https://github.com/wyre-technology/threatlocker-mcp/commit/85ad6d16b043246910c70cec80a044e90f25f27b))
+
 ## [1.2.2](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.2.1...v1.2.2) (2026-05-22)
 
 
