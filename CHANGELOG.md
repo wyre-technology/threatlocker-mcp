@@ -1,3 +1,10 @@
+## [1.2.4](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.2.3...v1.2.4) (2026-07-19)
+
+
+### Bug Fixes
+
+* **lint:** remove stale [@ts-expect-error](https://github.com/ts-expect-error) and TODO for published SDK ([#35](https://github.com/wyre-technology/threatlocker-mcp/issues/35)) ([4898082](https://github.com/wyre-technology/threatlocker-mcp/commit/4898082d1d1762bf0da0081ee07a93bc6148e6ce))
+
 ## [1.2.3](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.2.2...v1.2.3) (2026-07-18)
 
 
