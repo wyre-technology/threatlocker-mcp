@@ -1,12 +1,3 @@
-// TODO: SDK not yet published - remove these comments when @wyre-technology/node-threatlocker@0.1.0 is available
-// Expected to export ThreatLockerClient class with:
-// - .computers resource
-// - .computerGroups resource
-// - .approvalRequests resource
-// - .auditLog resource
-// - .organizations resource
-
-// @ts-expect-error pending SDK publish
 import { ThreatLockerClient } from '@wyre-technology/node-threatlocker';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { logger } from './logger.js';
