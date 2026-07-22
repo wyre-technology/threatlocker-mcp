@@ -61,8 +61,11 @@ function startHttpServer(): void {
     if (isGatewayMode) {
       const apiKey = req.headers['x-threatlocker-api-key'] as string | undefined;
       const organizationId = req.headers['x-threatlocker-organization-id'] as string | undefined;
+      // Portal instance letter (portal.<instance>.threatlocker.com) — keys are
+      // instance-specific; absent means the SDK default ('g').
+      const instance = req.headers['x-threatlocker-instance'] as string | undefined;
       if (apiKey && organizationId) {
-        await runWithCredentials({ apiKey, organizationId }, handle);
+        await runWithCredentials({ apiKey, organizationId, instance }, handle);
         return;
       }
       // Don't reject — tools/list works without credentials

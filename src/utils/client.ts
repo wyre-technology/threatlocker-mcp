@@ -5,7 +5,18 @@ import { logger } from './logger.js';
 export interface Credentials {
   apiKey: string;
   organizationId: string;
+  /**
+   * ThreatLocker portal instance letter — the letter in the tenant's portal
+   * URL (portal.<instance>.threatlocker.com). API keys only exist on the
+   * instance they were created on; using the wrong instance yields HTTP 440.
+   * Defaults to 'g' (the SDK default) when absent.
+   */
+  instance?: string;
 }
+
+// Hostname-safety guard: the instance is user-supplied (gateway header /
+// env var) and is interpolated into a hostname.
+const INSTANCE_RE = /^[a-z]{1,10}$/;
 
 // Request-scoped credential store. In gateway mode the HTTP layer runs each
 // request inside runWithCredentials({apiKey, organizationId}); getCredentials()
@@ -26,7 +37,7 @@ export function getCredentials(): Credentials | null {
     logger.warn('Missing credentials', { hasApiKey: !!apiKey, hasOrgId: !!organizationId });
     return null;
   }
-  return { apiKey, organizationId };
+  return { apiKey, organizationId, instance: process.env.THREATLOCKER_INSTANCE };
 }
 
 // Constructs a client from the request-scoped (or env) credentials. The client
@@ -39,6 +50,17 @@ export async function getClient(): Promise<any> {
       'No ThreatLocker API credentials configured. Set THREATLOCKER_API_KEY and THREATLOCKER_ORGANIZATION_ID.',
     );
   }
-  logger.info('Created ThreatLocker API client');
-  return new ThreatLockerClient(creds);
+  const instance = creds.instance?.toLowerCase();
+  if (instance && !INSTANCE_RE.test(instance)) {
+    // Fail loudly instead of silently falling back to 'g' — a wrong-instance
+    // client produces confusing HTTP 440s on every call.
+    throw new Error(`Invalid ThreatLocker portal instance "${creds.instance}".`);
+  }
+  logger.info('Created ThreatLocker API client', { instance: instance || 'g' });
+  return new ThreatLockerClient({
+    apiKey: creds.apiKey,
+    organizationId: creds.organizationId,
+    // SDK defaults to the 'g' instance when baseUrl is omitted.
+    ...(instance ? { baseUrl: `https://portalapi.${instance}.threatlocker.com/portalapi` } : {}),
+  });
 }

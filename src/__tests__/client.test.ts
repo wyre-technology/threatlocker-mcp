@@ -1,17 +1,27 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { getCredentials, runWithCredentials } from '../utils/client.js';
+import { getClient, getCredentials, runWithCredentials } from '../utils/client.js';
 
 const ORIG_ENV = { ...process.env };
+
+function restoreEnv(key: string): void {
+  if (ORIG_ENV[key] === undefined) {
+    delete process.env[key];
+  } else {
+    process.env[key] = ORIG_ENV[key];
+  }
+}
 
 beforeEach(() => {
   // Clean slate — remove ThreatLocker env vars
   delete process.env.THREATLOCKER_API_KEY;
   delete process.env.THREATLOCKER_ORGANIZATION_ID;
+  delete process.env.THREATLOCKER_INSTANCE;
 });
 
 afterEach(() => {
-  process.env.THREATLOCKER_API_KEY = ORIG_ENV.THREATLOCKER_API_KEY;
-  process.env.THREATLOCKER_ORGANIZATION_ID = ORIG_ENV.THREATLOCKER_ORGANIZATION_ID;
+  restoreEnv('THREATLOCKER_API_KEY');
+  restoreEnv('THREATLOCKER_ORGANIZATION_ID');
+  restoreEnv('THREATLOCKER_INSTANCE');
 });
 
 describe('getCredentials', () => {
@@ -34,6 +44,46 @@ describe('getCredentials', () => {
     process.env.THREATLOCKER_ORGANIZATION_ID = 'env-org';
     const creds = getCredentials();
     expect(creds).toEqual({ apiKey: 'env-key', organizationId: 'env-org' });
+  });
+
+  it('picks up the portal instance from THREATLOCKER_INSTANCE', () => {
+    process.env.THREATLOCKER_API_KEY = 'env-key';
+    process.env.THREATLOCKER_ORGANIZATION_ID = 'env-org';
+    process.env.THREATLOCKER_INSTANCE = 'e';
+    const creds = getCredentials();
+    expect(creds?.instance).toBe('e');
+  });
+});
+
+describe('getClient portal-instance routing', () => {
+  it('builds an instance-specific baseUrl when instance is set', async () => {
+    process.env.THREATLOCKER_API_KEY = 'env-key';
+    process.env.THREATLOCKER_ORGANIZATION_ID = 'env-org';
+    process.env.THREATLOCKER_INSTANCE = 'e';
+
+    const client = await getClient();
+    expect(client.creds).toEqual({
+      apiKey: 'env-key',
+      organizationId: 'env-org',
+      baseUrl: 'https://portalapi.e.threatlocker.com/portalapi',
+    });
+  });
+
+  it('omits baseUrl when no instance is set (SDK defaults to g)', async () => {
+    process.env.THREATLOCKER_API_KEY = 'env-key';
+    process.env.THREATLOCKER_ORGANIZATION_ID = 'env-org';
+
+    const client = await getClient();
+    expect(client.creds).toEqual({ apiKey: 'env-key', organizationId: 'env-org' });
+    expect(client.creds).not.toHaveProperty('baseUrl');
+  });
+
+  it('rejects a malformed instance instead of silently using g', async () => {
+    process.env.THREATLOCKER_API_KEY = 'env-key';
+    process.env.THREATLOCKER_ORGANIZATION_ID = 'env-org';
+    process.env.THREATLOCKER_INSTANCE = 'evil.com/#';
+
+    await expect(getClient()).rejects.toThrow(/Invalid ThreatLocker portal instance/);
   });
 });
 
