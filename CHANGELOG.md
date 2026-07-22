@@ -1,3 +1,10 @@
+## [1.2.5](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.2.4...v1.2.5) (2026-07-22)
+
+
+### Bug Fixes
+
+* route API calls to the tenant's ThreatLocker portal instance ([#32](https://github.com/wyre-technology/threatlocker-mcp/issues/32)) ([c135eb6](https://github.com/wyre-technology/threatlocker-mcp/commit/c135eb69c416b106eef25693c918477d5cafdab0)), closes [wyre-technology/msp-claude-plugins#131](https://github.com/wyre-technology/msp-claude-plugins/issues/131)
+
 ## [1.2.4](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.2.3...v1.2.4) (2026-07-19)
 
 
