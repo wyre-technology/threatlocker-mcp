@@ -16,25 +16,28 @@ describe("verifyS2sHeader", () => {
   const MASTER = "test-master-secret-do-not-use-in-prod";
   const threatlockerSubkey = deriveRecipientSubkey(MASTER, "threatlocker");
   const siblingSubkey = deriveRecipientSubkey(MASTER, "knowbe4");
-  const now = Math.floor(Date.now() / 1000);
-
   it("accepts a header minted with this vendor's own derived subkey", () => {
+    const now = Math.floor(Date.now() / 1000);
     expect(verifyS2sHeader(mintHeader(threatlockerSubkey, now), threatlockerSubkey)).toBe(true);
   });
 
   it("REJECTS a header minted for a different vendor's derived subkey (recipient-binding proof)", () => {
+    const now = Math.floor(Date.now() / 1000);
     expect(verifyS2sHeader(mintHeader(siblingSubkey, now), threatlockerSubkey)).toBe(false);
   });
 
   it("rejects a stale timestamp outside the skew window", () => {
+    const now = Math.floor(Date.now() / 1000);
     expect(verifyS2sHeader(mintHeader(threatlockerSubkey, now - 301), threatlockerSubkey)).toBe(false);
   });
 
   it("rejects a future timestamp outside the skew window", () => {
+    const now = Math.floor(Date.now() / 1000);
     expect(verifyS2sHeader(mintHeader(threatlockerSubkey, now + 301), threatlockerSubkey)).toBe(false);
   });
 
   it("accepts a timestamp at the edge of the skew window", () => {
+    const now = Math.floor(Date.now() / 1000);
     expect(verifyS2sHeader(mintHeader(threatlockerSubkey, now - 300), threatlockerSubkey)).toBe(true);
   });
 
@@ -47,10 +50,12 @@ describe("verifyS2sHeader", () => {
   });
 
   it("rejects when the secret is empty (dark-by-default guarantee)", () => {
+    const now = Math.floor(Date.now() / 1000);
     expect(verifyS2sHeader(mintHeader(threatlockerSubkey, now), "")).toBe(false);
   });
 
   it("rejects a tampered signature", () => {
+    const now = Math.floor(Date.now() / 1000);
     const header = mintHeader(threatlockerSubkey, now);
     const tampered = header.slice(0, -1) + (header.endsWith("0") ? "1" : "0");
     expect(verifyS2sHeader(tampered, threatlockerSubkey)).toBe(false);
