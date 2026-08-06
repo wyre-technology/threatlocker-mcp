@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { getClient, getCredentials, runWithCredentials } from '../utils/client.js';
+import { clearInstanceCache } from '../utils/instance-detect.js';
 
 const ORIG_ENV = { ...process.env };
 
@@ -22,16 +23,31 @@ afterEach(() => {
   restoreEnv('THREATLOCKER_API_KEY');
   restoreEnv('THREATLOCKER_ORGANIZATION_ID');
   restoreEnv('THREATLOCKER_INSTANCE');
+  vi.unstubAllGlobals();
+  clearInstanceCache();
 });
+
+// Auto-detect probes hit the network; stub fetch so `h` is the accepting instance.
+function stubDetectionAccepting(accepted: string): void {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (url: string | URL) => {
+      const ok = String(url).includes(`portalapi.${accepted}.threatlocker.com`);
+      return { ok, status: ok ? 200 : 440 } as Response;
+    }),
+  );
+}
 
 describe('getCredentials', () => {
   it('returns null when both env vars are absent', () => {
     expect(getCredentials()).toBeNull();
   });
 
-  it('returns null when only apiKey is set', () => {
+  it('returns apiKey-only credentials when organizationId is absent (API defaults to the key\'s primary org)', () => {
     process.env.THREATLOCKER_API_KEY = 'key-only';
-    expect(getCredentials()).toBeNull();
+    const creds = getCredentials();
+    expect(creds?.apiKey).toBe('key-only');
+    expect(creds?.organizationId).toBeUndefined();
   });
 
   it('returns null when only organizationId is set', () => {
@@ -69,13 +85,35 @@ describe('getClient portal-instance routing', () => {
     });
   });
 
-  it('omits baseUrl when no instance is set (SDK defaults to g)', async () => {
+  it('auto-detects the portal instance when none is set', async () => {
     process.env.THREATLOCKER_API_KEY = 'env-key';
     process.env.THREATLOCKER_ORGANIZATION_ID = 'env-org';
+    stubDetectionAccepting('h');
 
     const client = await getClient();
-    expect(client.creds).toEqual({ apiKey: 'env-key', organizationId: 'env-org' });
-    expect(client.creds).not.toHaveProperty('baseUrl');
+    expect(client.creds.baseUrl).toBe('https://portalapi.h.threatlocker.com/portalapi');
+  });
+
+  it('does not probe when an instance is explicitly provided', async () => {
+    process.env.THREATLOCKER_API_KEY = 'env-key';
+    process.env.THREATLOCKER_ORGANIZATION_ID = 'env-org';
+    process.env.THREATLOCKER_INSTANCE = 'e';
+    const probe = vi.fn(async () => {
+      throw new Error('should not be called');
+    });
+    vi.stubGlobal('fetch', probe);
+
+    await getClient();
+    expect(probe).not.toHaveBeenCalled();
+  });
+
+  it('builds a client without organizationId when only the API key is configured', async () => {
+    process.env.THREATLOCKER_API_KEY = 'env-key';
+    stubDetectionAccepting('g');
+
+    const client = await getClient();
+    expect(client.creds.apiKey).toBe('env-key');
+    expect(client.creds).not.toHaveProperty('organizationId');
   });
 
   it('rejects a malformed instance instead of silently using g', async () => {
@@ -108,20 +146,30 @@ describe('runWithCredentials + getCredentials ALS precedence', () => {
     expect(getCredentials()).toBeNull();
   });
 
-  it('partial ALS credentials (missing organizationId) fall back to env', () => {
+  it('ALS credentials with an empty organizationId still win over env (org treated as unset)', () => {
     process.env.THREATLOCKER_API_KEY = 'env-key';
     process.env.THREATLOCKER_ORGANIZATION_ID = 'env-org';
 
-    // Simulate a partially-constructed object (shouldn't happen in prod, but guard it)
+    // Gateway mode sends apiKey without organizationId when the customer left
+    // the org field blank — those credentials are valid (the API defaults to
+    // the key's primary org) and must NOT fall through to another tenant's env.
     runWithCredentials({ apiKey: 'scoped-key', organizationId: '' }, () => {
-      // organizationId is falsy — should fall back to env
       const creds = getCredentials();
-      expect(creds).toEqual({ apiKey: 'env-key', organizationId: 'env-org' });
+      expect(creds?.apiKey).toBe('scoped-key');
+      expect(creds?.organizationId).toBeUndefined();
+    });
+  });
+
+  it('ALS credentials without organizationId at all are accepted', () => {
+    runWithCredentials({ apiKey: 'scoped-key' }, () => {
+      const creds = getCredentials();
+      expect(creds?.apiKey).toBe('scoped-key');
+      expect(creds?.organizationId).toBeUndefined();
     });
   });
 
   it('concurrent contexts do not contaminate each other', async () => {
-    const results: Array<{ apiKey: string; organizationId: string } | null> = [];
+    const results: Array<{ apiKey: string; organizationId?: string } | null> = [];
 
     const task = (apiKey: string, organizationId: string, delayMs: number) =>
       new Promise<void>((resolve) => {
