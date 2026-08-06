@@ -60,12 +60,14 @@ function startHttpServer(): void {
 
     if (isGatewayMode) {
       const apiKey = req.headers['x-threatlocker-api-key'] as string | undefined;
+      // Optional — the ThreatLocker API defaults to the key's primary org
+      // when the OrganizationId header is omitted.
       const organizationId = req.headers['x-threatlocker-organization-id'] as string | undefined;
       // Portal instance letter (portal.<instance>.threatlocker.com) — keys are
-      // instance-specific; absent means the SDK default ('g').
+      // instance-specific; absent triggers auto-detection in getClient().
       const instance = req.headers['x-threatlocker-instance'] as string | undefined;
-      if (apiKey && organizationId) {
-        await runWithCredentials({ apiKey, organizationId, instance }, handle);
+      if (apiKey) {
+        await runWithCredentials({ apiKey, organizationId: organizationId || undefined, instance }, handle);
         return;
       }
       // Don't reject — tools/list works without credentials
