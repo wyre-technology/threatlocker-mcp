@@ -3,6 +3,13 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { createMcpServer } from './server.js';
 import { getCredentials, runWithCredentials } from './utils/client.js';
 import { logger } from './utils/logger.js';
+import { verifyS2sHeader, S2S_HEADER } from './s2s-verify.js';
+
+// Conduit service-to-service auth (gateway#377 parity). Non-empty =
+// enforce X-Gateway-S2S on every /mcp request; empty = disabled, behavior
+// exactly as before (dark-by-default until the gateway provisions this
+// container's derived subkey). See src/s2s-verify.ts.
+const S2S_SECRET = process.env.CONDUIT_S2S_SECRET || '';
 
 function startHttpServer(): void {
   const port = parseInt(process.env.MCP_HTTP_PORT || '8080', 10);
@@ -31,6 +38,22 @@ function startHttpServer(): void {
     if (url.pathname !== '/mcp') {
       res.writeHead(404, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Not found', endpoints: ['/mcp', '/health', '/healthz'] }));
+      return;
+    }
+
+    // Conduit service-to-service auth (gateway#377 parity): rejected
+    // BEFORE any credential extraction, mirroring every other ported
+    // wrapper (e.g. containers/sentinelone-mcp/gateway_wrapper.py). This is
+    // independent of this repo's own "credentials optional, tools/list still
+    // works" design further down — S2S proves the GATEWAY, not the vendor
+    // tenant, and must hold regardless of that separate policy.
+    if (S2S_SECRET && !verifyS2sHeader(req.headers[S2S_HEADER] as string | undefined, S2S_SECRET)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(
+        JSON.stringify({
+          error: 'Missing or invalid X-Gateway-S2S header: this endpoint only accepts requests signed by the gateway.',
+        })
+      );
       return;
     }
 
