@@ -38,15 +38,15 @@
     "@wyre-technology/node-threatlocker": "^1.0.5"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^12.0.8",
+    "@semantic-release/changelog": "^7.0.0",
+    "@semantic-release/git": "^11.0.1",
+    "@semantic-release/github": "^12.0.9",
     "@semantic-release/npm": "^13.1.4",
-    "@types/node": "^26.0.0",
-    "semantic-release": "^25.0.5",
+    "@types/node": "^26.2.0",
+    "semantic-release": "^25.0.9",
     "tsup": "^8.0.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   },
   "engines": {
     "node": ">=18.0.0"
