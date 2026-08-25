@@ -4,7 +4,7 @@ const path = require('path');
 
 const packagePath = path.join(__dirname, '..', 'package.json');
 const package = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-const outputName = `${package.name}.mcpb`;
+const outputName = `${package.name.split("/").pop()}.mcpb`;
 
 try {
   // `mcpb pack [directory] [output]` takes the SOURCE DIRECTORY first and the
