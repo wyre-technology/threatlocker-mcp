@@ -7,13 +7,13 @@
   "long_description": "Provides AI assistants with structured access to your ThreatLocker Portal data. Manage computers, computer groups, approval requests, audit logs, and organizations through the Model Context Protocol. Features decision-tree navigation, elicitation prompts, and comprehensive error handling.",
   "author": {
     "name": "WYRE Technology",
-    "url": "https://github.com/wyre-technology"
+    "url": "https://github.com/WYRE-AI"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wyre-technology/threatlocker-mcp"
+    "url": "https://github.com/WYRE-AI/threatlocker-mcp"
   },
-  "homepage": "https://github.com/wyre-technology/threatlocker-mcp",
+  "homepage": "https://github.com/WYRE-AI/threatlocker-mcp",
   "license": "Apache-2.0",
   "keywords": ["threatlocker", "security", "endpoint", "application-control", "msp", "computers"],
   "server": {
