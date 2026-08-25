@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   threatlocker-mcp:
-    image: ghcr.io/wyre-technology/threatlocker-mcp:latest
+    image: ghcr.io/wyre-ai/threatlocker-mcp:latest
     container_name: threatlocker-mcp
     restart: unless-stopped
     environment:

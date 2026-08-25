@@ -1,5 +1,5 @@
 {
-  "name": "threatlocker-mcp",
+  "name": "@wyre-ai/threatlocker-mcp",
   "version": "1.2.5",
   "description": "MCP server for the ThreatLocker Portal API",
   "type": "module",
@@ -35,7 +35,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
-    "@wyre-technology/node-threatlocker": "^1.0.5"
+    "@wyre-ai/node-threatlocker": "^1.0.6"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^7.0.0",

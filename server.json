@@ -1,18 +1,18 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.wyre-technology/threatlocker-mcp",
+  "name": "io.github.WYRE-AI/threatlocker-mcp",
   "title": "ThreatLocker",
   "description": "MCP server for ThreatLocker — zero-trust endpoint protection, allowlisting, and policies.",
   "repository": {
-    "url": "https://github.com/wyre-technology/threatlocker-mcp",
+    "url": "https://github.com/WYRE-AI/threatlocker-mcp",
     "source": "github"
   },
   "version": "0.0.0",
-  "websiteUrl": "https://github.com/wyre-technology/threatlocker-mcp",
+  "websiteUrl": "https://github.com/WYRE-AI/threatlocker-mcp",
   "packages": [
     {
       "registryType": "oci",
-      "identifier": "ghcr.io/wyre-technology/threatlocker-mcp:0.0.0",
+      "identifier": "ghcr.io/wyre-ai/threatlocker-mcp:0.0.0",
       "transport": {
         "type": "stdio"
       },

@@ -75,7 +75,7 @@ LOG_LEVEL=debug|info|warn|error  # Default: info
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/wyre-technology/threatlocker-mcp.git
+git clone https://github.com/WYRE-AI/threatlocker-mcp.git
 cd threatlocker-mcp
 ```
 
@@ -128,7 +128,7 @@ docker run -d \
   --name threatlocker-mcp \
   -p 8080:8080 \
   -e AUTH_MODE=gateway \
-  ghcr.io/wyre-technology/threatlocker-mcp:latest
+  ghcr.io/wyre-ai/threatlocker-mcp:latest
 
 # Stdio mode
 docker run -d \
@@ -136,7 +136,7 @@ docker run -d \
   -e THREATLOCKER_API_KEY=your_key \
   -e THREATLOCKER_ORGANIZATION_ID=your_org_id \
   -e MCP_TRANSPORT=stdio \
-  ghcr.io/wyre-technology/threatlocker-mcp:latest
+  ghcr.io/wyre-ai/threatlocker-mcp:latest
 ```
 
 ## Architecture
