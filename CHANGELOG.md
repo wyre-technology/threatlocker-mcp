@@ -1,3 +1,15 @@
+## [Unreleased]
+
+### Added
+
+- Handler-invocation test coverage for all five tool domains
+  (`approval_requests`, `audit_log`, `computer_groups`, `computers`,
+  `organizations`). Each exported `handleCall` is now invoked directly
+  against a mocked `getClient()`, asserting outbound call shape (method,
+  args/params) and response-transformation (what is returned to the MCP
+  caller), plus default/elicitation-fallback branches and the
+  unknown-tool error path. No production code changed.
+
 ## [1.2.5](https://github.com/wyre-technology/threatlocker-mcp/compare/v1.2.4...v1.2.5) (2026-07-22)
 
 
